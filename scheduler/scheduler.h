@@ -18,13 +18,14 @@ class Scheduler {
   // LockManager of the appropriate type is created and a RemoteConnection is
   // set up accordingly.
   explicit Scheduler(Configuration* conf) : configuration_(conf) {}
+  virtual ~Scheduler() = 0;
 
   // Scheduler::Run() is essentially the database node's main() function. All
   // further input to the Scheduler (e.g. new transaction requests) is sent via
   // protocol messages over the RemoteConnection.
-  virtual void Run();
+  virtual void Run() = 0;
 
- private:
+ protected:
   // This node's Configuration specifies:
   //    - this node's identity
   //    - this node's execution mode (deterministic vs nondeterministic)

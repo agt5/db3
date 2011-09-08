@@ -1,0 +1,30 @@
+// Author: Alexander Thomson (thomson@cs.yale.edu)
+//
+// TODO(alex): Fix types for rset, wset, and args.
+
+message TxnProto {
+  // Globally unique transaction id, specifying global order.
+  required int64 txn_id = 1;
+
+  // Specifies which stored procedure to invoke at execution time.
+  optional int32 txn_type = 10;
+
+  // Isolation level at which to execute transaction.
+  //
+  // Note: Currently only full serializability is supported.
+  optional int32 isolation_level = 11;
+
+  // True if transaction is known to span multiple database nodes.
+  optional bool multipartition = 20;
+
+  // Keys of objects read during execution of this transaction.
+  repeated int64 rset = 30;
+
+  // Keys of objects modified by this transaction.
+  repeated int64 wset = 31;
+
+  // Arguments to be passed when invoking the stored procedure to execute this
+  // transaction.
+  repeated int64 args = 32;
+}
+
