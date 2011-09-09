@@ -12,11 +12,17 @@ class SimpleBackend : public Backend {
  public:
   virtual ~SimpleBackend() {}
   virtual void Prefetch(vector<Key> keys) {}  // No prefetching.
-  virtual void Execute(const TransactionProto& txn);
+  virtual void Execute(const TxnProto& txn);
 
  private:
   map<Key, Value> objects_;
 };
+
+/////////////////   Implementation details follow   /////////////////
+
+void SimpleBackend::Execute(const TransactionProto& txn) {
+  // TODO(alex): Implement this.
+}
 
 #endif  // #define _DB_BACKEND_BACKEND_H_
 

@@ -10,17 +10,31 @@
 
 class SerialScheduler : public Scheduler {
  public:
-  // Given a Configuration (of which the Scheduler takes ownership), a
-  // LockManager of the appropriate type is created and a RemoteConnection is
-  // set up accordingly.
-  explicit SerialScheduler(Configuration* conf) : configuration_(conf) {}
-  virtual ~SerialScheduler() {}
-
-  // Scheduler::Run() is essentially the database node's main() function. All
-  // further input to the Scheduler (e.g. new transaction requests) is sent via
-  // protocol messages over the RemoteConnection.
+  explicit SerialScheduler(Configuration* conf);
+  virtual ~SerialScheduler();
   virtual void Run();
 };
+
+/////////////////   Implementation details follow   /////////////////
+
+SerialScheduler::SerialScheduler(Configuration* conf)
+  : configuration_(conf), connection_(new Connection(configuration_)),
+    backend_(new SimpleBackend()) {
+}
+
+SerialScheduler::~SerialScheduler() {
+  delete configuration_;
+  delete connection_;
+  delete backend_;
+}
+
+void SerialScheduler::Run() {
+  TxnProto* txn;
+  while (true) {
+    if ((txn = connection_->GetNewTxn()) != NULL)
+      backend_->Execute(txn);
+  }
+}
 
 #endif  // #define _DB_SCHEDULER_SCHEDULER_H_
 

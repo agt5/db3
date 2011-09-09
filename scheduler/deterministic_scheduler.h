@@ -7,10 +7,10 @@
 // granted to transactions in the order in which they requested them (i.e. in
 // the global transaction order).
 
-#ifndef _DB_SCHEDULER_DETERMINISTIC_LOCK_MANAGER_H_
-#define _DB_SCHEDULER_DETERMINISTIC_LOCK_MANAGER_H_
+#ifndef _DB_SCHEDULER_DETERMINISTIC_SCHEDULER_H_
+#define _DB_SCHEDULER_DETERMINISTIC_SCHEDULER_H_
 
-#include "lock_manager.h"
+#include "scheduler.h"
 
 class DeterministicLockManager : public LockManager {
  public:
@@ -26,6 +26,27 @@ class DeterministicLockManager : public LockManager {
   // that key is locked and the first element in the queue specifies the owner.
   // Subsequent elements in the queue are waiting to acquire the lock.
   map<Key, queue<int> > lock_table_;
+
+  // Queue of transaction ids of transactions that have acquired all locks that
+  // they have requested. Owned by the DeterministicScheduler.
+  queue<int>* ready_txns_;
+};
+
+class DeterministicScheduler : public Scheduler {
+ public:
+  explicit DeterministicScheduler(Configuration* conf);
+  virtual ~DeterministicScheduler();
+  virtual void Run();
+
+ private:
+  // The per-node lock manager tracks what transactions have temporary ownership
+  // of what database objects, allowing the scheduler to track LOCAL conflicts
+  // and enforce equivalence to transaction orders.
+  LockManager lock_manager_;
+
+  // Queue of transaction ids of transactions that have acquired all locks that
+  // they have requested.
+  queue<int> ready_txns_;
 };
 
 #endif  // #define _DB_SCHEDULER_DETERMINISTIC_LOCK_MANAGER_H_

@@ -9,13 +9,18 @@
 #include <vector>
 
 #include "../types.h"
-#include "../proto/transaction.pb.h"
+#include "../proto/txn.pb.h"
 
 class Backend {
  public:
+  Backend();
   virtual ~Backend() {}
+
+  // Loads objects specified by 'keys' into memory if they were on disk.
   virtual void Prefetch(vector<Key> keys) = 0;
-  virtual void Execute(const TransactionProto& txn) = 0;
+
+  // Executes 'txn'.
+  virtual void Execute(TxnProto* txn) = 0;
 };
 
 #endif  // #define _DB_BACKEND_BACKEND_H_

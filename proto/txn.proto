@@ -1,6 +1,6 @@
 // Author: Alexander Thomson (thomson@cs.yale.edu)
 //
-// TODO(alex): Fix types for rset, wset, and args.
+// TODO(alex): Fix types for read_set and write_set.
 
 message TxnProto {
   // Globally unique transaction id, specifying global order.
@@ -12,19 +12,44 @@ message TxnProto {
   // Isolation level at which to execute transaction.
   //
   // Note: Currently only full serializability is supported.
-  optional int32 isolation_level = 11;
+  enum IsolationLevel {
+    SERIALIZABLE = 0;
+    SNAPSHOT = 1;
+    READ_COMMITTED = 2;
+    READ_UNCOMMITTED = 3;
+  };
+  optional IsolationLevel isolation_level = 11;
 
   // True if transaction is known to span multiple database nodes.
-  optional bool multipartition = 20;
+  optional bool multipartition = 12;
 
   // Keys of objects read during execution of this transaction.
-  repeated int64 rset = 30;
+  //
+  // repeated Key read_set = 20;
+  repeated uint64 read_set = 20;
 
   // Keys of objects modified by this transaction.
-  repeated int64 wset = 31;
+  //
+  // repeated Key write_set = 20;
+  repeated uint64 write_set = 21;
 
   // Arguments to be passed when invoking the stored procedure to execute this
-  // transaction.
-  repeated int64 args = 32;
+  // transaction. 'arg' is a serialized protocol message. The client and backend
+  // application code is assumed to know how to interpret this protocol message
+  // based on 'txn_type'.
+  optional bytes arg = 22;
+
+  // Transaction status.
+  enum Status {
+    NEW = 0;
+    ACTIVE = 1;
+    READY = 2;
+    NETWORK = 3;
+    BLOCKED = 4;
+    ABORTED = 5;
+    COMMITTED = 6;
+    TWOPC = 7;
+  };
+  optional Status status = 30;
 }
 
