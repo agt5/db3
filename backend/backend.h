@@ -8,16 +8,18 @@
 
 #include <vector>
 
-#include "../types.h"
+#include "../common/types.h"
 #include "../proto/txn.pb.h"
+
+using std::vector;
 
 class Backend {
  public:
-  Backend();
+  Backend() {}
   virtual ~Backend() {}
 
   // Loads objects specified by 'keys' into memory if they were on disk.
-  virtual void Prefetch(vector<Key> keys) = 0;
+  virtual void Prefetch(const vector<Key>& keys) = 0;
 
   // Executes 'txn'.
   virtual void Execute(TxnProto* txn) = 0;

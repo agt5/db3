@@ -1,12 +1,10 @@
 // Author: Alexander Thomson (thomson@cs.yale.edu)
 
 #include "txn.pb.h"
-#include "../testing.h"
+#include "../common/testing.h"
 
-#include <sstream>
-
-using namespace std;
-
+// This is more a test of protobuf serialization and of common/testing.h than
+// it is of the TxnProto protocol message.
 TEST(TxnProtoTest) {
   TxnProto t1, t2;
 

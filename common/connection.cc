@@ -1,3 +1,5 @@
+// Author: Shu-chun Weng (scweng@cs.yale.edu)
+
 #include "remote.h"
 
 #include <cstdio>

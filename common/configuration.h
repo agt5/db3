@@ -24,34 +24,28 @@ enum ExecutionMode{
   MODE_TRADITIONAL,
 };
 
-enum NodeType{
-  DB_NODE, PREPROCESSOR_NODE, MEDIATOR_NODE,
-};
+// Note: each node has one sequencer, one scheduler, and one backend; these are
+// not separate nodes.
+enum Component { SEQUENCER, SCHEDULER, BACKEND, };
 
 struct Node {
-  int node_id;         // Globally unique node identifier.
-  NodeType node_type;  // Type of this node.
-  string host;         // Hostname/IP address of this node's machine.
-  int cores;           // Total number of cores available for use by the
-                       // database system on this node's machine.
-};
-
-struct DBNode : public Node {
+  // Globally unique node identifier.
+  int node_id;
   int replica_id;
   int partition_id;
-  int port_for_new_txns;
-  int port_for_txn_msgs;
-};
 
-struct PreprocessorNode : public Node {
-  int replica_id;
-  int partition_id;
-  int port;
-};
+  // Hostname/IP address of this node's machine.
+  string host;
 
-struct MediatorNode : public Node {
-  int partition_id;
-  int port;
+  // Ports for individual components within this node.
+  int sequencer_port;
+  int scheduler_new_txn_port;
+  int scheduler_message_port;
+  int backend_port;
+
+  // Total number of cores available for use by this node.
+  // Note: Is this needed?
+  int cores;
 };
 
 class Configuration {

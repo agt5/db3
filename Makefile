@@ -5,19 +5,24 @@ SRCS=
 OBJS=$(SRCS:.cc=.o)
 
 all: $(OBJS)
+	$(MAKE) -C common
+	$(MAKE) -C proto
+	$(MAKE) -C client
+	$(MAKE) -C sequencer
 	$(MAKE) -C scheduler
 	$(MAKE) -C backend
-	$(MAKE) -C testing
-	$(MAKE) -C client
-	$(MAKE) -C common
+	$(MAKE) -C deployment
 
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 clean:
 	rm -f $(OBJS)
+	$(MAKE) -C common clean
+	$(MAKE) -C proto clean
+	$(MAKE) -C client clean
+	$(MAKE) -C sequencer clean
 	$(MAKE) -C scheduler clean
 	$(MAKE) -C backend clean
-	$(MAKE) -C testing clean
-	$(MAKE) -C client clean
-	$(MAKE) -C common clean
+	$(MAKE) -C deployment clean
+

@@ -24,6 +24,8 @@
 #include <iostream>
 #include <stdio.h>
 
+using namespace std;
+
 // Global variable tracking whether current test has failed.
 bool __failed_;
 

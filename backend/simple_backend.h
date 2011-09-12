@@ -8,20 +8,43 @@
 
 #include "backend.h"
 
+#include <map>
+using std::map;
+
 class SimpleBackend : public Backend {
  public:
+  SimpleBackend() {}
   virtual ~SimpleBackend() {}
-  virtual void Prefetch(vector<Key> keys) {}  // No prefetching.
-  virtual void Execute(const TxnProto& txn);
+  virtual void Prefetch(const vector<Key>& keys) {}  // No prefetching.
+  virtual void Execute(TxnProto* txn);
+
+  // Returns object identified by 'key' (for testing purposes).
+  Value Lookup(Key key);
 
  private:
+  // Key-value map of objects (where objects are uint64s).
   map<Key, Value> objects_;
 };
 
 /////////////////   Implementation details follow   /////////////////
 
-void SimpleBackend::Execute(const TransactionProto& txn) {
-  // TODO(alex): Implement this.
+void SimpleBackend::Execute(TxnProto* txn) {
+  for (int64 i = 0; i < txn->write_set_size(); i++) {
+    if (objects_.count(txn->write_set(i))) {
+      int64 prev = UnpackInt64(objects_[txn->write_set(i)]);
+      objects_[txn->write_set(i)] = PackInt64(prev + 1);
+    } else {
+      objects_[txn->write_set(i)] = PackInt64(1);
+    }
+  }
+}
+
+Value SimpleBackend::Lookup(Key key) {
+  if (objects_.count(key) > 0) {
+    return objects_[key];
+  } else {
+    return PackInt64(0);
+  }
 }
 
 #endif  // #define _DB_BACKEND_BACKEND_H_

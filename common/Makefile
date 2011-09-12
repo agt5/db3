@@ -1,9 +1,9 @@
-PROG=common
+PROG=types_test
 
 CXXFLAGS=-g -O2 -Wno-deprecated -Wall
 LDFLAGS=
 
-SRCS=configuration.cc connection.cc
+SRCS=types_test.cc #configuration.cc connection.cc
 OBJS=$(SRCS:.cc=.o)
 
 all: $(PROG)

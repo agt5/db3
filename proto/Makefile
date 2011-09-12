@@ -24,3 +24,5 @@ $(PROG): $(OBJS)
 clean:
 	rm -f $(PROG) $(OBJS) *.pb.h *.pb.cc *.pb.o
 
+test: $(PROG)
+	./proto_test
